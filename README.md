@@ -44,7 +44,7 @@ Demo sunucusu Azure'da (Poland Central, `Standard_B4s_v2`) çalışıyor ve her 
 
 - Metin kanalı en sık 6 saniyede bir çalıştığı için tekli p95 (0.56 sn) bile bu aralığın çok altında; metin modeli için GPU'lu örnek gerekmiyor.
 - p50 ile p95 arasındaki fark büyük. 2 çekirdekli paylaşımlı örnekte gecikme dalgalanıyor, bu yüzden tek bir ortalama yerine p95'e bakmak gerekiyor.
-- Sekiz sentetik cümlenin yedisinde en olası duygu cümlenin anlamıyla uyumluydu. "Müşterinin son dakika değişikliği ekipte ciddi bir gerginlik yarattı" cümlesi `anger` (0.944) olarak etiketlendi.
+- Sekiz sentetik cümlenin hepsinde en olası etiket cümlenin anlamıyla uyumlu görünüyor (ör. "panikledim" → `fear` 0.996). Bu küçük küme bir doğruluk ölçümü değil, yalnızca modelin bu ortamda doğru yüklendiğinin kontrolü.
 
 **Karşılaşılan sorunlar:** Azure ML'nin hazır *Python 3.10 - Pytorch and Tensorflow* çekirdeğinde `torch 2.1.2+cu121` geliyor. `transformers 4.57` ise en az torch 2.2 istediği için model yüklenirken `AttributeError: module 'torch.utils._pytree' has no attribute 'register_pytree_node'` hatası alındı; aynı kurulum NumPy'ı 2.x'e yükseltince NumPy 1.x ile derlenmiş eklentiler de uyarı verdi. Aynı ortamda torch'u CPU sürümüyle güncellemek bu sefer eski `triton` paketiyle çakıştı (`No module named 'triton.backends'`). Hazır ortamı yamamak yerine ayrı bir sanal ortam kurup çekirdek olarak ekledim:
 
