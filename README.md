@@ -8,7 +8,7 @@
 
 > **Staj notu (AVD Teknoloji Danışmanlık, 2026):** Bu repo, stajımın dördüncü haftasında üzerinde çalıştığım multimodal mülakat sisteminin kaynak kodudur. Altyapı (Docker/Compose/Kubernetes) denemeleri [m53-interview-infra](https://github.com/alimdemir/m53-interview-infra) reposunda. Bu repoya staj kapsamında eklenenler:
 > - [`scripts/staj_demo_mac.sh`](scripts/staj_demo_mac.sh): Apple Silicon'da testler, gerçek modellerle `check_ai` ve demo sunucusunu tek komutla çalıştırır
-> - [`notebooks/01_sagemaker_metin_duygu_cpu.ipynb`](notebooks/01_sagemaker_metin_duygu_cpu.ipynb): Türkçe metin duygu modelinin AWS SageMaker (ml.t3.medium, CPU) üzerinde çıkarım ve gecikme testi
+> - [`notebooks/01_bulut_cpu_metin_duygu.ipynb`](notebooks/01_bulut_cpu_metin_duygu.ipynb): Türkçe metin duygu modelinin GPU'suz bir bulut örneğinde (Azure Machine Learning compute instance) çıkarım ve gecikme testi
 > - Azure dağıtım betiklerinde abonelik kimliği, alan adı ve IP adresi koddan çıkarıldı. Bu değerler artık ortam değişkeninden ya da VM'nin Instance Metadata Service kaydından okunuyor.
 
 PDF mimari planına bağlı, gerçek zamanlı ve insan denetimli mülakat destek sistemi. Django arayüzü güvenli aday davet bağlantısı üretir; iki katılımcıyı WebRTC ile görüştürür; Whisper ile Türkçe transkript ve Apple Silicon için Qwen3-4B-MLX ile kanıta bağlı takip soruları sunar.
