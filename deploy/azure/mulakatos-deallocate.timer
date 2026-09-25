@@ -1,0 +1,11 @@
+[Unit]
+Description=Deallocate MulakatOS Azure VM every night at 23:00
+
+[Timer]
+OnCalendar=*-*-* 23:00:00
+AccuracySec=1min
+RandomizedDelaySec=30s
+Unit=mulakatos-deallocate.service
+
+[Install]
+WantedBy=timers.target

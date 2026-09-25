@@ -1,0 +1,14 @@
+listening-port=3478
+fingerprint
+lt-cred-mech
+realm=__DOMAIN__
+user=mulakatos:__TURN_PASSWORD__
+external-ip=__PUBLIC_IP__
+min-port=49160
+max-port=49200
+total-quota=50
+stale-nonce=600
+no-multicast-peers
+no-cli
+no-tls
+no-dtls

@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "models": [
+    {
+      "key": "face-detector",
+      "repository": "opencv/face_detection_yunet",
+      "destination": "face-detector",
+      "profile": "coaching",
+      "allow_patterns": ["face_detection_yunet_2023mar.onnx", "README.md", "LICENSE"],
+      "purpose": "OpenCV 4.x uyumlu YuNet; yalnız yüz konumu, kimlik çıkarımı yapmaz.",
+      "license_gate": "MIT, OpenCV resmi model deposu."
+    },
+    {
+      "key": "qwen-mlx",
+      "repository": "mlx-community/Qwen3-4B-4bit",
+      "destination": "qwen-mlx",
+      "profile": "mac",
+      "allow_patterns": ["*.json", "*.txt", "*.safetensors", "README.md", "LICENSE*"],
+      "purpose": "Apple Silicon üzerinde 4-bit Qwen3-4B, kanıta bağlı Türkçe soru önerileri.",
+      "license_gate": "Apache-2.0; upstream Qwen/Qwen3-4B, MLX community dönüşümü."
+    },
+    {
+      "key": "qwen-cpu",
+      "repository": "Qwen/Qwen2.5-0.5B-Instruct",
+      "destination": "qwen-cpu",
+      "profile": "production",
+      "allow_patterns": ["*.json", "*.txt", "*.safetensors", "*.tiktoken", "README.md", "LICENSE*", "merges.txt", "vocab.json"],
+      "purpose": "Linux CPU üzerinde düşük gecikmeli, kanıta bağlı Türkçe takip soruları için küçük yerel Qwen modeli.",
+      "license_gate": "Apache-2.0; üretim alanında soru kalitesi ayrıca değerlendirilmeli."
+    },
+    {
+      "key": "emotion-text",
+      "repository": "alperengozeten/bert-turkish-emotion",
+      "destination": "emotion-text",
+      "profile": "coaching",
+      "allow_patterns": ["*.json", "*.txt", "*.safetensors", "README.md", "LICENSE*"],
+      "purpose": "Türkçe metindeki duygu ifadeleri; 7 sınıf. Eğitim verisi belgeleri eksik; yalnız deneysel koçluk.",
+      "license_gate": "Model kartı MIT; eğitim verisi lisansı ve alan doğrulaması üretim öncesi incelenmeli."
+    },
+    {
+      "key": "emotion-audio",
+      "repository": "SeaBenSea/hubert-large-turkish-speech-emotion-recognition",
+      "destination": "emotion-audio",
+      "profile": "coaching",
+      "allow_patterns": ["*.json", "*.safetensors", "README.md", "LICENSE*"],
+      "purpose": "TurEV-DB üzerinde Türkçe HuBERT; Angry, Calm, Happy, Sad. Özel sınıflandırma başlığı gerektirir.",
+      "license_gate": "Model kartı Apache-2.0; TurEV veri koşulları üretim öncesi ayrıca incelenmeli."
+    },
+    {
+      "key": "emotion-video",
+      "repository": "trpakov/vit-face-expression",
+      "destination": "emotion-video",
+      "profile": "coaching",
+      "allow_patterns": ["*.json", "*.safetensors", "README.md", "LICENSE*"],
+      "purpose": "Tek yüz kırpımında 7 ifade sınıfı; yüz kimliği veya kişilik çıkarmaz.",
+      "license_gate": "Model kartı Apache-2.0; FER2013 kaynak koşulları ve alan doğrulaması ayrıca incelenmeli."
+    },
+    {
+      "key": "whisper",
+      "repository": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "destination": "faster-whisper-large-v3-turbo",
+      "profile": "production",
+      "upstream": "openai/whisper-large-v3-turbo",
+      "purpose": "Canlı Türkçe transkripsiyon için faster-whisper uyumlu CTranslate2 ağırlıkları",
+      "license_gate": "Upstream OpenAI Whisper model kartı MIT; dönüştürülmüş deponun provenansı dağıtım öncesi kilit dosyasında saklanır."
+    }
+  ]
+}

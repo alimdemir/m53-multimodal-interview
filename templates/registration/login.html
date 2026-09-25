@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Giriş · M53{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block shell %}
+<main class="auth-layout">
+  <section class="auth-story">
+    <a class="brand brand-light" href="{% url 'home' %}">
+      <span class="brand-logo" aria-hidden="true"><b>M</b><i>53</i></span>
+    </a>
+    <div class="auth-story-copy">
+      <p class="eyebrow light">İnsan odaklı mülakat zekâsı</p>
+      <h1>Daha iyi sorular.<br>Daha adil görüşmeler.</h1>
+      <p>Canlı transkript, doğrulanabilir kanıtlar ve mülakatçı kontrolünde takip soruları tek bir güvenli çalışma alanında.</p>
+    </div>
+    <div class="trust-strip">
+      <span><b>01</b> Otomatik eleme yok</span>
+      <span><b>02</b> Duygu puanı yok</span>
+      <span><b>03</b> Karar her zaman insanda</span>
+    </div>
+  </section>
+  <section class="auth-panel">
+    <form class="auth-card" method="post">
+      {% csrf_token %}
+      <div class="mobile-brand">
+        <span class="brand-logo" aria-hidden="true"><b>M</b><i>53</i></span>
+      </div>
+      <p class="eyebrow">Güvenli çalışma alanı</p>
+      <h2>Tekrar hoş geldiniz</h2>
+      <p class="muted">Mülakatlarınızı planlamak ve yönetmek için giriş yapın.</p>
+      {% if form.non_field_errors %}
+      <div class="form-alert">Kullanıcı adı veya parola hatalı.</div>
+      {% endif %}
+      <label for="id_username">Kullanıcı adı</label>
+      <input id="id_username" name="username" type="text" autocomplete="username" required autofocus>
+      <label for="id_password">Parola</label>
+      <input id="id_password" name="password" type="password" autocomplete="current-password" required>
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button class="btn btn-primary btn-block" type="submit">Giriş yap <span aria-hidden="true">→</span></button>
+      <p class="security-note"><span aria-hidden="true">●</span> Oturum ve erişim hareketleri güvenlik için kaydedilir.</p>
+    </form>
+  </section>
+</main>
+{% endblock %}

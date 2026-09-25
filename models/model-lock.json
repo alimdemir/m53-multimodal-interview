@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-05T09:03:20.366496+00:00",
+  "profile": "mac",
+  "models": [
+    {
+      "key": "whisper",
+      "repository": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+      "revision": "0a363e9161cbc7ed1431c9597a8ceaf0c4f78fcf",
+      "destination": "models/faster-whisper-large-v3-turbo",
+      "reported_size_bytes": 1621668947,
+      "purpose": "Canlı Türkçe transkripsiyon için faster-whisper uyumlu CTranslate2 ağırlıkları",
+      "license_gate": "Upstream OpenAI Whisper model kartı MIT; dönüştürülmüş deponun provenansı dağıtım öncesi kilit dosyasında saklanır."
+    },
+    {
+      "key": "emotion-text",
+      "repository": "alperengozeten/bert-turkish-emotion",
+      "revision": "61edf57b674da7f1822c024c1299d22612a54cf0",
+      "destination": "models/emotion-text",
+      "reported_size_bytes": 443524449,
+      "purpose": "Türkçe metindeki duygu ifadeleri; 7 sınıf. Eğitim verisi belgeleri eksik; yalnız deneysel koçluk.",
+      "license_gate": "Model kartı MIT; eğitim verisi lisansı ve alan doğrulaması üretim öncesi incelenmeli."
+    },
+    {
+      "key": "emotion-audio",
+      "repository": "SeaBenSea/hubert-large-turkish-speech-emotion-recognition",
+      "revision": "a9576bf7f7c6b45a27f1f756e675ceaaddde5fde",
+      "destination": "models/emotion-audio",
+      "reported_size_bytes": 1266027157,
+      "purpose": "TurEV-DB üzerinde Türkçe HuBERT; Angry, Calm, Happy, Sad. Özel sınıflandırma başlığı gerektirir.",
+      "license_gate": "Model kartı Apache-2.0; TurEV veri koşulları üretim öncesi ayrıca incelenmeli."
+    },
+    {
+      "key": "emotion-video",
+      "repository": "trpakov/vit-face-expression",
+      "revision": "ef0bc6fc34241b6587e7e009e7711357be28c024",
+      "destination": "models/emotion-video",
+      "reported_size_bytes": 343243361,
+      "purpose": "Tek yüz kırpımında 7 ifade sınıfı; yüz kimliği veya kişilik çıkarmaz.",
+      "license_gate": "Model kartı Apache-2.0; FER2013 kaynak koşulları ve alan doğrulaması ayrıca incelenmeli."
+    },
+    {
+      "key": "qwen-mlx",
+      "repository": "mlx-community/Qwen3-4B-4bit",
+      "revision": "4dcb3d101c2a062e5c1d4bb173588c54ea6c4d25",
+      "destination": "models/qwen-mlx",
+      "reported_size_bytes": 2278970613,
+      "purpose": "Apple Silicon üzerinde 4-bit Qwen3-4B, kanıta bağlı Türkçe soru önerileri.",
+      "license_gate": "Apache-2.0; upstream Qwen/Qwen3-4B, MLX community dönüşümü."
+    },
+    {
+      "key": "face-detector",
+      "repository": "opencv/face_detection_yunet",
+      "revision": "3cc26e7f1014a5ee5d74a42acee58bafc9d0a310",
+      "destination": "models/face-detector",
+      "reported_size_bytes": 236419,
+      "purpose": "OpenCV 4.x uyumlu YuNet; yalnız yüz konumu, kimlik çıkarımı yapmaz.",
+      "license_gate": "MIT, OpenCV resmi model deposu."
+    }
+  ]
+}

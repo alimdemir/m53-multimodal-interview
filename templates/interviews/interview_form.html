@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Yeni mülakat · M53{% endblock %}
+{% block content %}
+<div class="narrow-page">
+  <a class="back-link" href="{% url 'dashboard' %}">← Toplantılara dön</a>
+  <div class="form-heading">
+    <p class="eyebrow">Yeni toplantı</p>
+    <h1>Mülakatı planlayın</h1>
+    <p class="muted">Bağlantı oluşturmak ve takip sorularını role bağlamak için temel bilgileri ekleyin.</p>
+  </div>
+  <form class="editor-card" method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-alert">{{ form.non_field_errors }}</div>{% endif %}
+    <section class="form-section">
+      <div class="form-section-number">01</div>
+      <div class="form-section-content">
+        <h2>Toplantı bilgileri</h2>
+        <div class="form-grid two">
+          {% for field in form %}
+            {% if field.name == 'job_description' %}</div></div></section><section class="form-section"><div class="form-section-number">02</div><div class="form-section-content"><h2>Kanıt bağlamı</h2><p class="form-help">Soru motoru yalnız bu içeriklere ve final transkripte dayanır.</p><div class="form-grid">
+            {% endif %}
+            <div class="field {% if field.name == 'job_description' or field.name == 'rubric' or field.name == 'resume_text' %}field-wide{% endif %}">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+              {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    <div class="form-guardrail">
+      <span class="guardrail-icon">✓</span>
+      <div><b>Ürün koruması etkin</b><p>Duygu/kişilik puanı ve otomatik sıralama yoktur. Önerilen her soru mülakatçı onayı gerektirir.</p></div>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{% url 'dashboard' %}">Vazgeç</a>
+      <button class="btn btn-primary" type="submit">Toplantıyı oluştur <span>→</span></button>
+    </div>
+  </form>
+</div>
+{% endblock %}

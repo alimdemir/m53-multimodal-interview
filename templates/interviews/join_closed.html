@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Toplantı kapalı · M53{% endblock %}
+{% block content %}
+<div class="center-state">
+  <div class="state-icon">✓</div>
+  <p class="eyebrow">{{ interview.get_status_display }}</p>
+  <h1>Bu toplantı artık katılıma açık değil</h1>
+  <p>{{ interview.title }} için toplantı sahibinden yeni bir bağlantı isteyebilirsiniz.</p>
+</div>
+{% endblock %}

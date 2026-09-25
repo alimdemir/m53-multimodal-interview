@@ -1,0 +1,16 @@
+__DOMAIN__ {
+  encode zstd gzip
+
+  handle_path /static/* {
+    root * /opt/mulakatos/app/staticfiles
+    file_server
+  }
+
+  reverse_proxy 127.0.0.1:8000
+
+  header {
+    Referrer-Policy "strict-origin-when-cross-origin"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+  }
+}

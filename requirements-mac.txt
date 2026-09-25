@@ -1,0 +1,2 @@
+-r requirements-models.txt
+mlx-lm>=0.26,<1; sys_platform == "darwin" and platform_machine == "arm64"

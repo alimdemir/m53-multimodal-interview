@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kanıta dayalı, gerçek zamanlı mülakat destek sistemi">
+  <title>{% block title %}M53{% endblock %}</title>
+  <link rel="icon" href="{% static 'img/favicon.svg' %}?v=20260905-4" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20260905-5">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% block shell %}
+  <header class="topbar">
+    <a class="brand" href="{% url 'home' %}" aria-label="M53 ana sayfa">
+      <span class="brand-logo" aria-hidden="true"><b>M</b><i>53</i></span>
+    </a>
+    {% if user.is_authenticated %}
+    <nav class="topnav" aria-label="Ana menü">
+      <a class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Görüşmeler</a>
+    </nav>
+    <div class="header-actions">
+      {% if request.resolver_match.url_name != 'interview_create' %}<a class="btn btn-primary header-create" href="{% url 'interview_create' %}"><span aria-hidden="true">＋</span> Yeni görüşme</a>{% endif %}
+      <details class="account-menu">
+        <summary aria-label="Hesap menüsünü aç"><span class="avatar">{{ user.get_username|slice:":1"|upper }}</span><span class="user-name">{{ user.get_full_name|default:user.get_username }}</span><span aria-hidden="true">⌄</span></summary>
+        <div class="account-popover"><b>{{ user.get_full_name|default:user.get_username }}</b><small>Görüşme yöneticisi</small><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link-button danger" type="submit">Çıkış yap</button></form></div>
+      </details>
+    </div>
+    {% endif %}
+  </header>
+  {% if messages %}
+  <div class="toast-stack" aria-live="polite">
+    {% for message in messages %}<div class="toast {{ message.tags }}">{{ message }}</div>{% endfor %}
+  </div>
+  {% endif %}
+  <main class="page-shell">{% block content %}{% endblock %}</main>
+  {% endblock %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

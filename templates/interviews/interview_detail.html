@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ interview.title }} · M53{% endblock %}
+{% block content %}
+<div class="narrow-page detail-page">
+  <a class="back-link" href="{% url 'dashboard' %}">← Toplantılara dön</a>
+  <section class="detail-hero">
+    <div>
+      <span class="status-pill status-{{ interview.status }}">{{ interview.get_status_display }}</span>
+      <h1>{{ interview.title }}</h1>
+      <p>{{ interview.candidate_name }} · {{ interview.position }}</p>
+    </div>
+    {% if interview.is_joinable %}<a class="btn btn-primary" href="{% url 'host_room' interview.id %}">Toplantı odasını aç</a>{% endif %}
+  </section>
+  <div class="detail-grid">
+    <section class="detail-card invite-card">
+      <div class="card-heading"><div><p class="eyebrow">Aday daveti</p><h2>Güvenli toplantı bağlantısı</h2></div><span class="secure-badge">● Şifreli oturum</span></div>
+      <p class="muted">Bu bağlantıya sahip aday, aydınlatma ve açık onay adımından sonra odaya katılabilir.</p>
+      <div class="copy-field"><input id="invite-url" value="{{ join_url }}" readonly><button class="btn btn-secondary copy-button" data-copy="{{ join_url }}">Kopyala</button></div>
+      <form method="post" action="{% url 'rotate_invite' interview.id %}" onsubmit="return confirm('Eski bağlantı hemen geçersiz olacak. Devam edilsin mi?')">
+        {% csrf_token %}<button class="link-button danger" type="submit">Bağlantıyı iptal et ve yenile</button>
+      </form>
+    </section>
+    <aside class="detail-card facts-card">
+      <h2>Toplantı ayrıntıları</h2>
+      <dl>
+        <div><dt>Tarih</dt><dd>{{ interview.scheduled_at|date:"d F Y, H:i" }}</dd></div>
+        <div><dt>Süre</dt><dd>{{ interview.duration_minutes }} dakika</dd></div>
+        <div><dt>Kayıt</dt><dd>Kapalı</dd></div>
+        <div><dt>Saklama</dt><dd>{{ interview.retention_days }} gün</dd></div>
+        <div><dt>Aday onayı</dt><dd>{% if consent %}<span class="ok-text">Alındı</span>{% else %}Bekleniyor{% endif %}</dd></div>
+      </dl>
+    </aside>
+  </div>
+  <section class="detail-card context-card">
+    <p class="eyebrow">Soru motoru bağlamı</p>
+    <div class="context-grid">
+      <article><h3>İş ilanı</h3><p>{{ interview.job_description|linebreaksbr }}</p></article>
+      <article><h3>Rubrik</h3><p>{{ interview.rubric|default:"Eklenmedi"|linebreaksbr }}</p></article>
+      <article><h3>CV kanıtı</h3><p>{{ interview.resume_text|default:"Eklenmedi"|linebreaksbr }}</p></article>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

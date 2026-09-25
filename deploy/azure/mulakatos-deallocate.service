@@ -1,0 +1,14 @@
+[Unit]
+Description=Deallocate MulakatOS Azure VM to stop compute billing
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/local/sbin/mulakatos-deallocate
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+

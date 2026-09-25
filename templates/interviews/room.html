@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ interview.title }} · Canlı oda{% endblock %}
+{% block body_class %}room-page{% endblock %}
+{% block shell %}
+<div class="room-app">
+  <header class="room-topbar">
+    <a class="brand brand-light" href="{% if is_host %}{% url 'dashboard' %}{% else %}#{% endif %}">
+      <span class="brand-logo" aria-hidden="true"><b>M</b><i>53</i></span>
+    </a>
+    <div class="room-title">
+      <strong>{{ interview.title }}</strong>
+      <span>{{ interview.candidate_name }} · {{ interview.position }}</span>
+    </div>
+    <div class="room-status"><i></i><span id="connection-label">Bağlantı bekleniyor</span><time id="room-timer">00:00</time></div>
+  </header>
+  <main id="room-layout" class="room-layout">
+    <section class="video-workspace" id="meeting-stage">
+      <div class="view-toolbar" aria-label="Görüşme görünümü">
+        <div class="view-mode-group" role="group" aria-label="Video yerleşimi">
+          <button class="view-button active" data-view-mode="gallery" type="button" aria-pressed="true" title="İki görüntüyü yan yana göster">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="14" rx="2"></rect><rect x="13" y="5" width="8" height="14" rx="2"></rect></svg><span>Galeri</span>
+          </button>
+          <button class="view-button" data-view-mode="speaker" type="button" aria-pressed="false" title="Konuşanı büyük göster">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"></rect><rect x="15" y="13" width="4" height="4" rx="1"></rect></svg><span>Konuşmacı</span>
+          </button>
+          <button class="view-button" id="toggle-fullscreen" type="button" aria-pressed="false" title="Video alanını tam ekran yap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg><span id="fullscreen-label">Tam ekran</span>
+          </button>
+        </div>
+      </div>
+      <div class="video-grid" id="video-grid" data-view-mode="gallery">
+        <article class="video-tile local-tile" data-participant="local">
+          <video id="local-video" autoplay muted playsinline></video>
+          <div class="video-placeholder" id="local-placeholder"><span>{{ role|slice:":1"|upper }}</span><p>Kamera başlatılmadı</p></div>
+          <div class="video-name"><span class="quality-dot"></span>{% if is_host %}Siz · Mülakatçı{% else %}Siz · Aday{% endif %}</div>
+          <div class="signal-chip" id="local-signal">Hazır</div>
+          <button class="tile-focus" data-focus-participant="local" type="button" title="Bu görüntüyü büyüt" aria-label="Kendi görüntünüzü büyüt">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg>
+          </button>
+        </article>
+        <article class="video-tile remote-tile is-active-speaker" data-participant="remote">
+          <video id="remote-video" autoplay playsinline></video>
+          <div class="video-placeholder" id="remote-placeholder"><span>{% if is_host %}{{ interview.candidate_name|slice:":1"|upper }}{% else %}M{% endif %}</span><p id="remote-placeholder-text">Diğer katılımcı bekleniyor</p></div>
+          <div class="video-name"><span class="quality-dot muted"></span>{% if is_host %}{{ interview.candidate_name }} · Aday{% else %}Mülakatçı{% endif %}</div>
+          <div class="signal-chip" id="remote-signal">Çevrimdışı</div>
+          <button class="tile-focus" data-focus-participant="remote" type="button" title="Bu görüntüyü büyüt" aria-label="Karşı tarafın görüntüsünü büyüt">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg>
+          </button>
+        </article>
+      </div>
+      {% if is_host %}
+      <section class="question-overlay" aria-labelledby="question-title">
+        <header class="overlay-head">
+          <div><span class="overlay-live-dot"></span><h2 id="question-title">Soru önerileri</h2><span class="count-badge" id="question-count">{{ suggested_question_cards|length }}</span></div>
+          <button class="overlay-icon-button" id="generate-questions" type="button" title="Yeni soru önerisi" aria-label="Yeni soru önerisi hazırla"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M6.1 9a7 7 0 0111.7-2L20 9M4 15l2.2 2a7 7 0 0011.7-2"></path></svg></button>
+        </header>
+        <span class="service-badge state-{{ question_status.state }} overlay-service" id="question-badge"><i></i>{{ question_status.label }}</span>
+        <div class="question-list" id="question-list" aria-live="polite">
+          {% for card in suggested_question_cards %}
+          {% with question=card.question %}
+          <article class="question-card" data-question-id="{{ question.id }}">
+            <div class="question-meta"><span>{{ question.get_question_type_display }}</span><small>Öncelik {{ question.priority }}</small></div>
+            <p>{{ question.text }}</p>
+            <div class="question-actions"><button data-action="dismissed">Geç</button><button class="ask-button" data-action="asked">Soruldu</button></div>
+          </article>
+          {% endwith %}
+          {% empty %}
+          <p class="question-empty" id="questions-empty">Adayın yanıtı bekleniyor.</p>
+          {% endfor %}
+        </div>
+      </section>
+      {% if interview.research_mode %}
+      <section class="emotion-overlay" id="emotion-overlay" aria-labelledby="emotion-title">
+        <header class="overlay-head emotion-overlay-head">
+          <div><span class="overlay-live-dot"></span><h2 id="emotion-title">Aday duygu sinyalleri</h2></div>
+        </header>
+        <p class="emotion-status" id="analysis-status" role="status">Aday izni ve bağlantısı bekleniyor</p>
+        <div class="emotion-grid">
+          {% for key, label, model in emotion_modalities %}
+          <article class="emotion-card" data-modality="{{ key }}">
+            <div class="emotion-card-head"><h3>{{ label }}</h3><small class="model-state">Bekleniyor</small></div>
+            <strong class="emotion-label">Kapalı</strong>
+            <div class="emotion-scores"></div>
+            <p class="emotion-detail sr-only">Onayınız olmadan çalışmaz.</p>
+            <small class="emotion-latency sr-only"></small>
+          </article>
+          {% endfor %}
+        </div>
+        <button class="resume-audio" id="resume-audio" type="button" hidden>Sesi sürdür</button>
+      </section>
+      {% endif %}
+      <div id="live-captions" class="live-captions" aria-live="polite" aria-atomic="false"><p class="caption-waiting">Canlı altyazı açık · konuşma bekleniyor</p></div>
+      {% endif %}
+      <div class="prejoin-card" id="prejoin-card">
+        <div>
+          <span class="prejoin-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10l4.5-2.5v9L15 14M4 6h11v12H4z"></path></svg></span>
+          <div><b>Kamera ve mikrofonunuzu hazırlayın</b><p>Tarayıcı izni verdikten sonra görüşme bağlantısı kurulacak.</p></div>
+        </div>
+        <button class="btn btn-primary" id="start-media" type="button">Kamera ve mikrofonu başlat</button>
+      </div>
+      <div class="room-controls" aria-label="Görüşme kontrolleri">
+        <button class="control-button" id="toggle-mic" type="button" disabled><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"></path></svg></span><small>Mikrofon</small></button>
+        <button class="control-button" id="toggle-camera" type="button" disabled><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="3"></rect><path d="M16 10l5-3v10l-5-3"></path></svg></span><small>Kamera</small></button>
+        {% if is_host %}<button class="control-button" id="toggle-captions" type="button" aria-pressed="true"><span>CC</span><small>Altyazı açık</small></button>{% endif %}
+        {% if is_host %}<button class="control-button" id="copy-invite" type="button"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 007.5.5l2-2a5 5 0 00-7-7l-1.1 1.1M14 11a5 5 0 00-7.5-.5l-2 2a5 5 0 007 7l1.1-1.1"></path></svg></span><small>Davet</small></button>{% endif %}
+        <button class="control-button danger" id="leave-room" type="button"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.6 15.2c4.3-2.2 8.5-2.2 12.8 0M7.5 14l-1.3 4M16.5 14l1.3 4M4 13c5.3-3.2 10.7-3.2 16 0"></path></svg></span><small>{% if is_host %}Bitir{% else %}Ayrıl{% endif %}</small></button>
+      </div>
+      <div class="privacy-banner" title="Görüşme kaydedilmiyor; ham ses ve video geçicidir"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 018 0v3"></path></svg><span>Kaydedilmiyor</span></div>
+    </section>
+  </main>
+</div>
+{{ room_config|json_script:"room-config" }}
+{% csrf_token %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/room.js' %}?v=20260905-3"></script>{% endblock %}

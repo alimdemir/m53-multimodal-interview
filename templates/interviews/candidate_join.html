@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ interview.title }} daveti{% endblock %}
+{% block body_class %}candidate-lobby-page{% endblock %}
+{% block shell %}
+<main class="candidate-lobby">
+  <section class="lobby-summary">
+    <a class="brand brand-light" href="#">
+      <span class="brand-logo" aria-hidden="true"><b>M</b><i>53</i></span>
+    </a>
+    <div class="lobby-summary-copy">
+      <span class="meeting-label">Görüşme daveti</span>
+      <h1>{{ interview.title }}</h1>
+      <p>{{ interview.position }}</p>
+      <dl>
+        <div><dt>Tarih</dt><dd>{{ interview.scheduled_at|date:"d F Y" }}</dd></div>
+        <div><dt>Saat</dt><dd>{{ interview.scheduled_at|date:"H:i" }} (İstanbul)</dd></div>
+        <div><dt>Süre</dt><dd>{{ interview.duration_minutes }} dakika</dd></div>
+      </dl>
+    </div>
+    <p class="lobby-footnote">Görüşme kaydı varsayılan olarak kapalıdır.</p>
+  </section>
+  <section class="consent-panel">
+    <form class="consent-card" method="post">
+      {% csrf_token %}
+      <p class="eyebrow">Katılmadan önce</p>
+      <h2>Aydınlatma ve tercihlerin</h2>
+      <p class="muted">Bu görüşmede sesiniz canlı Türkçe transkript oluşturmak için işlenir. Mülakatçıya kanıta dayalı soru önerileri gösterilir.</p>
+      <div class="privacy-points">
+        <div><span>01</span><p><b>Otomatik karar yok</b> Sistem sizi puanlamaz, sıralamaz veya elemez.</p></div>
+        <div><span>02</span><p>{% if interview.research_mode %}<b>İsteğe bağlı deneysel analiz</b> Ayrı izin verirseniz anlık sinyaller yalnız mülakatçıya gösterilir; kaydedilmez ve otomatik karara katılmaz.{% else %}<b>Duygu çıkarımı kapalı</b> Bu görüşmede duygu analizi yapılmaz.{% endif %}</p></div>
+        <div><span>03</span><p><b>Veri minimizasyonu</b> Ham ses ve video varsayılan olarak kaydedilmez; transkript {{ interview.retention_days }} gün saklanır.</p></div>
+      </div>
+      <div class="field">
+        <label for="{{ form.participant_name.id_for_label }}">{{ form.participant_name.label }}</label>
+        {{ form.participant_name }}
+        {% for error in form.participant_name.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      <label class="check-row">{{ form.informed_consent }} <span>{{ form.informed_consent.label }}</span></label>
+      <label class="check-row">{{ form.camera_optional }} <span>{{ form.camera_optional.label }}</span></label>
+      {% if form.analysis_consent %}<label class="check-row">{{ form.analysis_consent }} <span>{{ form.analysis_consent.label }}</span></label>{% endif %}
+      {% for error in form.informed_consent.errors %}<span class="field-error">Onay vermeden toplantıya katılamazsınız.</span>{% endfor %}
+      {% for error in form.camera_optional.errors %}<span class="field-error">Kamera tercihini anladığınızı belirtin.</span>{% endfor %}
+      <button class="btn btn-primary btn-block" type="submit">Tercihlerimi onayla ve odaya katıl <span>→</span></button>
+      <p class="legal-note">Katılmayarak görüşme sahibinden alternatif bir görüşme yöntemi talep edebilirsiniz.</p>
+    </form>
+  </section>
+</main>
+{% endblock %}

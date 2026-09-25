@@ -1,0 +1,23 @@
+.DS_Store
+.env
+.secrets/
+.venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+db.sqlite3
+staticfiles/
+models/*
+!models/README.md
+!models/model-manifest.json
+!models/model-lock.json
+!models/.gitkeep
+tmp/
+.pytest_cache/
+htmlcov/
+*.log
+*.ses
+
+# yerel sanal ortam ve model klasörleri sembolik bağ olabilir
+.venv
+docs/calisma_kayitlari/

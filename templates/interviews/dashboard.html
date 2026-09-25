@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Toplantılar · M53{% endblock %}
+{% block content %}
+<section class="dashboard-head">
+  <div>
+    <p class="eyebrow">Mülakat çalışma alanı</p>
+    <h1>Merhaba, {{ user.first_name|default:user.username }}</h1>
+    <p class="muted">Görüşmeleri planlayın, güvenli bağlantıları paylaşın ve canlı oturumları yönetin.</p>
+  </div>
+</section>
+
+<section class="metric-grid" aria-label="Özet">
+  <article class="metric-card">
+    <span class="metric-icon blue">◷</span>
+    <div><strong>{{ scheduled_count }}</strong><span>Planlanan görüşme</span></div>
+  </article>
+  <article class="metric-card">
+    <span class="metric-icon green">✓</span>
+    <div><strong>{{ completed_count }}</strong><span>Tamamlanan</span></div>
+  </article>
+  <article class="metric-card">
+    <span class="metric-icon amber">◎</span>
+    <div><strong>İnsan</strong><span>Nihai karar sahibi</span></div>
+  </article>
+</section>
+
+<section class="section-block">
+  <div class="section-title-row">
+    <div>
+      <h2>Toplantılar</h2>
+      <p class="muted">Yaklaşan ve geçmiş mülakatlarınız</p>
+    </div>
+  </div>
+  {% if interviews %}
+  <div class="meeting-list">
+    {% for interview in interviews %}
+    <article class="meeting-card">
+      <div class="date-tile">
+        <span>{{ interview.scheduled_at|date:"M"|upper }}</span>
+        <strong>{{ interview.scheduled_at|date:"d" }}</strong>
+        <small>{{ interview.scheduled_at|date:"H:i" }}</small>
+      </div>
+      <div class="meeting-main">
+        <div class="meeting-title-line">
+          <h3><a href="{% url 'interview_detail' interview.id %}">{{ interview.title }}</a></h3>
+          <span class="status-pill status-{{ interview.status }}">{{ interview.get_status_display }}</span>
+        </div>
+        <p><b>{{ interview.candidate_name }}</b> · {{ interview.position }}</p>
+        <div class="meta-row">
+          <span>◷ {{ interview.duration_minutes }} dk</span>
+          <span>⌁ {{ interview.retention_days }} gün saklama</span>
+          <span>◉ Kayıt kapalı</span>
+        </div>
+      </div>
+      <div class="meeting-actions">
+        {% if interview.is_joinable %}
+        <button class="btn btn-secondary copy-button" data-copy="{{ interview.join_url }}">Bağlantıyı kopyala</button>
+        <a class="btn btn-primary" href="{% url 'host_room' interview.id %}">Odaya gir</a>
+        {% else %}
+        <a class="btn btn-secondary" href="{% url 'interview_detail' interview.id %}">Özeti aç</a>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-illustration"><span></span><span></span><span></span></div>
+    <h3>İlk mülakatınızı oluşturun</h3>
+    <p>Rol, CV ve rubriği ekleyin; paylaşılabilir güvenli toplantı bağlantısı saniyeler içinde hazır olsun.</p>
+    <a class="btn btn-primary" href="{% url 'interview_create' %}">Mülakat oluştur</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

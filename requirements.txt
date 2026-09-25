@@ -1,0 +1,5 @@
+Django>=5.2.17,<5.3
+channels[daphne]>=4.3.2,<5
+channels-redis>=4.3,<5
+psycopg[binary]>=3.2,<4
+python-dotenv>=1.1,<2
