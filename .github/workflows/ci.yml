@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  django:
+    name: Django testleri (kural motoru, modelsiz)
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-only-not-secret
+      QUESTION_BACKEND: rules
+      ASR_ENABLED: "0"
+      EMOTION_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python manage.py check
+      - name: Uygulama testleri
+        # test_live_ai model kütüphanelerini (torch, MLX) gerektirir; yalnız Apple Silicon'da çalıştırılır
+        run: python manage.py test interviews.tests -v 2
+
+  javascript:
+    name: Tarayıcı modülü testleri (node --test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node --test scripts/test_audio_capture.cjs scripts/test_emotion_display.cjs scripts/test_room_layout.cjs
