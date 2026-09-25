@@ -1,5 +1,6 @@
 # M53
 
+[![CI](https://github.com/alimdemir/m53-multimodal-interview/actions/workflows/ci.yml/badge.svg)](https://github.com/alimdemir/m53-multimodal-interview/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-5.2%20%2B%20Channels-092E20?logo=django)
 ![WebRTC](https://img.shields.io/badge/WebRTC-P2P-333333?logo=webrtc)
@@ -20,6 +21,46 @@ PDF mimari planına bağlı, gerçek zamanlı ve insan denetimli mülakat destek
 | | |
 |---|---|
 | ![](docs/ekran_goruntuleri/01_mac_check_ai.png)<br/>Gerçek modellerle `check_ai` özeti | ![](docs/ekran_goruntuleri/02_aday_lobisi.jpg)<br/>Aday bağlantısı: aydınlatma ve tercih ekranı |
+
+## Azure üzerinde
+
+### Canlı demo sunucusu
+
+Demo sunucusu Azure'da (Poland Central, `Standard_B4s_v2`) çalışıyor ve her gece 23.00'te kendi yönetilen kimliğiyle *deallocate* ediliyor. Ekran görüntüleri için VM'yi portaldan başlattım. Site HTTPS ile açıldı; `/health/` ucu Whisper, Qwen 2.5 ve üç duygu modelinin sunucuda hazır olduğunu gösterdi. Etkinlik günlüğünde gece 23.00'teki *Deallocate Virtual Machine* işleminin başlatıcısı `mulakatos-vm`, yani VM'nin kendi kimliği.
+
+| | |
+|---|---|
+| ![](docs/ekran_goruntuleri/03_azure_canli_giris.jpg)<br/>Azure'daki canlı sitenin giriş ekranı | ![](docs/ekran_goruntuleri/04_azure_health.jpg)<br/>`/health/`: modellerin durumu |
+| ![](docs/ekran_goruntuleri/05_azure_deallocate_kaydi.jpg)<br/>Etkinlik günlüğü: 23.00'te VM'nin kendi kimliğiyle deallocate | |
+
+### Azure Machine Learning: GPU'suz örnekte metin duygu modeli
+
+[`notebooks/01_bulut_cpu_metin_duygu.ipynb`](notebooks/01_bulut_cpu_metin_duygu.ipynb) not defterini ayrı bir kaynak grubunda açtığım Azure ML çalışma alanında, en küçük CPU örneğinde (`Standard_DS11_v2`, 2 çekirdek, 14 GB RAM, boşta 20 dakikada kapanır) çalıştırdım.
+
+| | p50 (ms) | p95 (ms) | cümle başına p50 (ms) |
+|---|---|---|---|
+| tekli (1 cümle) | 48.3 | 564.2 | 48.3 |
+| toplu (8 cümle) | 106.7 | 983.2 | 13.3 |
+
+- Metin kanalı en sık 6 saniyede bir çalıştığı için tekli p95 (0.56 sn) bile bu aralığın çok altında; metin modeli için GPU'lu örnek gerekmiyor.
+- p50 ile p95 arasındaki fark büyük. 2 çekirdekli paylaşımlı örnekte gecikme dalgalanıyor, bu yüzden tek bir ortalama yerine p95'e bakmak gerekiyor.
+- Sekiz sentetik cümlenin yedisinde en olası duygu cümlenin anlamıyla uyumluydu. "Müşterinin son dakika değişikliği ekipte ciddi bir gerginlik yarattı" cümlesi `anger` (0.944) olarak etiketlendi.
+
+**Karşılaşılan sorunlar:** Azure ML'nin hazır *Python 3.10 - Pytorch and Tensorflow* çekirdeğinde `torch 2.1.2+cu121` geliyor. `transformers 4.57` ise en az torch 2.2 istediği için model yüklenirken `AttributeError: module 'torch.utils._pytree' has no attribute 'register_pytree_node'` hatası alındı; aynı kurulum NumPy'ı 2.x'e yükseltince NumPy 1.x ile derlenmiş eklentiler de uyarı verdi. Aynı ortamda torch'u CPU sürümüyle güncellemek bu sefer eski `triton` paketiyle çakıştı (`No module named 'triton.backends'`). Hazır ortamı yamamak yerine ayrı bir sanal ortam kurup çekirdek olarak ekledim:
+
+```bash
+python3 -m venv ~/cpu-env
+~/cpu-env/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
+~/cpu-env/bin/pip install "transformers>=4.51,<5" pandas ipykernel
+~/cpu-env/bin/python -m ipykernel install --user --name cpu-env --display-name "Python 3 (cpu-env)"
+```
+
+İş bitince compute instance'ı durdurdum.
+
+| | |
+|---|---|
+| ![](docs/ekran_goruntuleri/06_azureml_torch21_hatasi.jpg)<br/>Hazır çekirdekte torch 2.1 ile `register_pytree_node` hatası | ![](docs/ekran_goruntuleri/07_azureml_ortam.jpg)<br/>Ayrı ortamda platform bilgisi ve sürümler |
+| ![](docs/ekran_goruntuleri/08_azureml_gecikme.jpg)<br/>Tahminler ve gecikme ölçümü | ![](docs/ekran_goruntuleri/09_azureml_compute_instance.jpg)<br/>`Standard_DS11_v2` compute instance |
 
 ## Canlı altyazı ve Hugging Face koçluk modu
 
