@@ -13,6 +13,14 @@
 
 PDF mimari planına bağlı, gerçek zamanlı ve insan denetimli mülakat destek sistemi. Django arayüzü güvenli aday davet bağlantısı üretir; iki katılımcıyı WebRTC ile görüştürür; Whisper ile Türkçe transkript ve Apple Silicon için Qwen3-4B-MLX ile kanıta bağlı takip soruları sunar.
 
+## Staj kapsamında çalıştırma (Apple Silicon Mac)
+
+`bash scripts/staj_demo_mac.sh` çıktısı: 52/52 test geçti. Ardından `check_ai` gerçek ağırlıklarla çalıştırıldı. Çalışma MPS üzerinde oldu. Türkçe sentetik ses Whisper ile hatasız yazıya döküldü ve Qwen3-4B (MLX) kanıta bağlı iki takip sorusu üretti.
+
+| | |
+|---|---|
+| ![](docs/ekran_goruntuleri/01_mac_check_ai.png)<br/>Gerçek modellerle `check_ai` özeti | ![](docs/ekran_goruntuleri/02_aday_lobisi.jpg)<br/>Aday bağlantısı: aydınlatma ve tercih ekranı |
+
 ## Canlı altyazı ve Hugging Face koçluk modu
 
 Görüşme odasındaki **CC** düğmesi iki katılımcı için de canlı Türkçe altyazıyı açar/kapatır. Görsel altyazıyı gizlemek, onay verilmiş transkripsiyonu durdurmaz. Ses üç saniyelik pencerelerde işlenir; bu bir kelime-kelime streaming ASR değildir. Gerçek gecikme model yüklemesi, donanım ve konuşmaya bağlıdır.
